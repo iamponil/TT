@@ -203,7 +203,7 @@ redis-server
 
 Open separate terminal windows for each service:
 
-#### API Gateway (Port: 3000)
+#### API Gateway (Port: 8000)
 
 ```bash
 cd backend/ApiGateway
@@ -212,21 +212,21 @@ npm start
 npm run dev
 ```
 
-#### User Service (Port: 3001)
+#### User Service (Port: 4000)
 
 ```bash
 cd backend/UserService
 npm run dev
 ```
 
-#### Article Service (Port: 3002)
+#### Article Service (Port: 7000)
 
 ```bash
 cd backend/ArticleService
 npm run dev
 ```
 
-#### Notification Service (Port: 3003)
+#### Notification Service (Port: 2000)
 
 ```bash
 cd backend/NotificationService
@@ -249,12 +249,12 @@ The application will be available at `http://localhost:4200`
 ```
 Client (Angular)
     ↓
-API Gateway (Port 3000)
+API Gateway (Port 8000)
     ↓
 ┌─────────────┬──────────────────┬────────────────────┐
 │             │                  │                    │
 UserService   ArticleService    NotificationService
-(Port 3001)   (Port 3002)       (Port 3003)
+(Port 4000)   (Port 7000)       (Port 2000)
 │             │                  │
 └─────────────┴──────────────────┴────────────────────┘
                 ↓                ↓
@@ -302,8 +302,8 @@ Create `.env` files in each service directory:
 ### UserService/.env
 
 ```env
-PORT=3001
-MONGODB_URI=mongodb://localhost:27017/tt_users
+PORT=4000
+MONGODB_URI=mongodb://localhost:27017/users
 REDIS_URL=redis://localhost:6379
 JWT_SECRET=your_jwt_secret_key_here
 JWT_EXPIRES_IN=7d
@@ -312,15 +312,15 @@ JWT_EXPIRES_IN=7d
 ### ArticleService/.env
 
 ```env
-PORT=3002
-MONGODB_URI=mongodb://localhost:27017/tt_articles
+PORT=7000
+MONGODB_URI=mongodb://localhost:27017/articles
 REDIS_URL=redis://localhost:6379
 ```
 
 ### NotificationService/.env
 
 ```env
-PORT=3003
+PORT=2000
 REDIS_URL=redis://localhost:6379
 VAPID_PUBLIC_KEY=your_vapid_public_key
 VAPID_PRIVATE_KEY=your_vapid_private_key
@@ -329,10 +329,10 @@ VAPID_PRIVATE_KEY=your_vapid_private_key
 ### ApiGateway/.env
 
 ```env
-PORT=3000
-USER_SERVICE_URL=http://localhost:3001
-ARTICLE_SERVICE_URL=http://localhost:3002
-NOTIFICATION_SERVICE_URL=http://localhost:3003
+PORT=8000
+USER_SERVICE_URL=http://localhost:4000
+ARTICLE_SERVICE_URL=http://localhost:7000
+NOTIFICATION_SERVICE_URL=http://localhost:2000
 ```
 
 ## 📝 License
@@ -346,3 +346,4 @@ Developed by the TT Team
 ---
 
 **Note**: Make sure all services are running before accessing the frontend application. The application requires MongoDB and Redis to be running and accessible.
+
