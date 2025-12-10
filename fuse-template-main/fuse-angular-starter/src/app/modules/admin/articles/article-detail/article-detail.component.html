@@ -1,0 +1,112 @@
+<div class="flex flex-col flex-auto min-w-0">
+
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between p-6 sm:py-8 sm:px-10 border-b bg-card dark:bg-transparent">
+        <div class="flex-1 min-w-0">
+            <!-- Back Button -->
+            <button mat-icon-button (click)="goBack()" class="mb-4">
+                <mat-icon [svgIcon]="'heroicons_outline:arrow-left'"></mat-icon>
+            </button>
+            
+            <!-- Title -->
+            <div *ngIf="!loading" class="text-3xl font-extrabold tracking-tight leading-tight">
+                {{article?.title}}
+            </div>
+        </div>
+    </div>
+
+    <!-- Main -->
+    <div class="flex-auto p-6 sm:p-10">
+        
+        <!-- Loading -->
+        <div *ngIf="loading" class="flex justify-center items-center p-20">
+            <mat-spinner></mat-spinner>
+        </div>
+
+        <!-- Article Content -->
+        <div *ngIf="!loading && article" class="w-full max-w-4xl mx-auto">
+            
+            <!-- Article Image -->
+            <div *ngIf="article.image" class="mb-8 rounded-2xl overflow-hidden">
+                <img [src]="article.image" [alt]="article.title" class="w-full h-auto">
+            </div>
+
+            <!-- Article Meta -->
+            <div class="flex items-center gap-4 mb-6 text-secondary">
+                <div>{{article.createdAt | date:'medium'}}</div>
+                <div *ngIf="article.tags && article.tags.length > 0" class="flex gap-2">
+                    <mat-chip *ngFor="let tag of article.tags">{{tag}}</mat-chip>
+                </div>
+            </div>
+
+            <!-- Article Content -->
+            <div class="prose dark:prose-invert max-w-none mb-12">
+                <p class="text-lg whitespace-pre-wrap">{{article.content}}</p>
+            </div>
+
+            <!-- Comments Section -->
+            <div class="border-t pt-8">
+                <h2 class="text-2xl font-bold mb-6">Comments ({{comments.length}})</h2>
+
+                <!-- Comment Form -->
+                <div *ngIf="currentUser" class="mb-8">
+                    <form [formGroup]="commentForm" (ngSubmit)="submitComment()">
+                        <mat-form-field class="w-full">
+                            <mat-label>Add a comment</mat-label>
+                            <textarea
+                                matInput
+                                formControlName="content"
+                                rows="3"
+                                placeholder="Share your thoughts..."></textarea>
+                        </mat-form-field>
+                        <div class="flex justify-end mt-2">
+                            <button
+                                mat-flat-button
+                                color="primary"
+                                type="submit"
+                                [disabled]="commentForm.invalid || commentForm.disabled">
+                                Post Comment
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Login Prompt -->
+                <div *ngIf="!currentUser" class="mb-8 p-4 bg-gray-100 dark:bg-gray-800 rounded">
+                    <p class="text-center">Please <a routerLink="/sign-in" class="text-primary">sign in</a> to comment</p>
+                </div>
+
+                <!-- Comments List -->
+                <div *ngIf="loadingComments" class="flex justify-center p-8">
+                    <mat-spinner diameter="40"></mat-spinner>
+                </div>
+
+                <div *ngIf="!loadingComments" class="space-y-6">
+                    <div *ngFor="let comment of comments" class="flex gap-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                        <!-- Avatar -->
+                        <div class="flex-shrink-0">
+                            <div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center">
+                                {{comment.authorName?.charAt(0)?.toUpperCase() || 'U'}}
+                            </div>
+                        </div>
+                        
+                        <!-- Comment Content -->
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="font-semibold">{{comment.authorName || 'Unknown'}}</span>
+                                <span class="text-sm text-secondary">{{comment.createdAt | date:'short'}}</span>
+                            </div>
+                            <p class="text-secondary">{{comment.content}}</p>
+                        </div>
+                    </div>
+
+                    <!-- Empty State -->
+                    <div *ngIf="comments.length === 0" class="text-center p-8 text-secondary">
+                        <mat-icon class="icon-size-16 mb-2" [svgIcon]="'heroicons_outline:chat-bubble-left'"></mat-icon>
+                        <p>No comments yet. Be the first to comment!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

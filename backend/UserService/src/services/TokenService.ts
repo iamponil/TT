@@ -13,7 +13,7 @@ const COOKIE_NAME = process.env.REFRESH_TOKEN_COOKIE_NAME || 'refreshToken';
 // Create JWT access token
 export const createAccessToken = (payload: object) => {
   return jwt.sign(payload as JWTPayload, process.env.JWT_ACCESS_SECRET!, {
-    expiresIn: '45m',
+    expiresIn: '2m',
   });
 };
 

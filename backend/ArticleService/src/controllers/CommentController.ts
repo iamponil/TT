@@ -20,11 +20,12 @@ class CommentController {
         content,
         article: articleId,
         author: authorId,
+        authorName: req.user.name || 'Unknown',
         parentComment: parentComment || null,
       });
 
-      // 3. Populate author details for response
-      await comment.populate('author', 'name email');
+      // 3. No need to populate author if we store name, but keep it if needed for ID
+      // await comment.populate('author', 'name email'); 
 
       // 4. Trigger Real-time Notification (via Redis Pub/Sub)
       // We publish an event that NotificationService is listening to

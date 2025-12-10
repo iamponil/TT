@@ -19,9 +19,10 @@ class ArticleServiceServer {
   }
 
   private configureMiddleware() {
+    const origin = process.env.FRONTEND_ORIGIN || 'http://localhost:4200';
     this.app.use(helmet());
     this.app.use(express.json());
-    this.app.use(cors()); // Configure specific origin if needed
+    this.app.use(cors({ origin, credentials: true }));
     this.app.use(apiLimiter); // Apply global rate limiter
   }
 

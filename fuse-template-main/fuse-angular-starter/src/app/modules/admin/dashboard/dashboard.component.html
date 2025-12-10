@@ -1,0 +1,60 @@
+<div class="flex flex-col flex-auto min-w-0">
+
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between p-6 sm:py-8 sm:px-10 border-b bg-card dark:bg-transparent">
+        <div class="flex-1 min-w-0">
+             <!-- Breadcrumbs -->
+             <div class="flex flex-wrap items-center font-medium">
+                <div>Admin</div>
+                <div class="flex items-center ml-1 whitespace-nowrap">
+                    <mat-icon
+                        class="icon-size-5 text-secondary"
+                        [svgIcon]="'heroicons_solid:chevron-right'"></mat-icon>
+                    <a class="ml-1 text-primary-500">Dashboard</a>
+                </div>
+            </div>
+            <!-- Title -->
+            <div class="mt-2 text-3xl font-extrabold tracking-tight leading-tight truncate">
+                Analytics
+            </div>
+        </div>
+        <!-- Actions -->
+        <div class="flex flex-shrink-0 items-center mt-6 sm:mt-0 sm:ml-4">
+            <button
+                mat-flat-button
+                color="primary"
+                (click)="fetchData()">
+                <mat-icon [svgIcon]="'heroicons_outline:refresh'"></mat-icon>
+                <span class="ml-2 mr-1">Refresh Data</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Main -->
+    <div class="flex-auto p-6 sm:p-10">
+        <div class="w-full max-w-screen-xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Summary Card -->
+            <div class="flex flex-col justify-center items-center bg-card p-8 rounded-2xl shadow-sm border">
+                <div class="text-secondary font-medium text-lg">Total Articles</div>
+                <div class="text-6xl font-bold tracking-tight text-primary mt-2">{{ totalArticles }}</div>
+            </div>
+
+            <!-- Chart Card -->
+            <div class="flex flex-col bg-card p-6 rounded-2xl shadow-sm border col-span-1 md:col-span-2">
+                <div class="text-xl font-bold mb-4">Tags Distribution</div>
+                <div *ngIf="!loading">
+                    <apx-chart
+                        [series]="chartOptions.series"
+                        [chart]="chartOptions.chart"
+                        [xaxis]="chartOptions.xaxis"
+                        [title]="chartOptions.title"
+                        [plotOptions]="chartOptions.plotOptions"
+                    ></apx-chart>
+                </div>
+                <div *ngIf="loading" class="flex justify-center p-10">
+                    Loading...
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

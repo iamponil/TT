@@ -59,7 +59,10 @@ export class SocketService {
       // 2. Notify the Author (if they are online)
       // Client should join room: "user:{userId}"
       // Don't notify if author commented on own post (optional check)
-      if (comment.author._id !== articleAuthorId) {
+      // Safety check: comment.author might be an ID string or an object depending on population
+      const commentAuthorId = typeof comment.author === 'object' && comment.author ? comment.author._id : comment.author;
+
+      if (commentAuthorId && commentAuthorId.toString() !== articleAuthorId) {
         this.io.to(`user:${articleAuthorId}`).emit('notification', {
           title: 'New Comment',
           message: `Someone commented on your article "${articleTitle}"`,

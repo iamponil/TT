@@ -1,0 +1,141 @@
+<div class="flex flex-col flex-auto min-w-0">
+
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between p-6 sm:py-8 sm:px-10 border-b bg-card dark:bg-transparent">
+        <div class="flex-1 min-w-0">
+            <!-- Breadcrumbs -->
+            <div class="flex flex-wrap items-center font-medium">
+                <div>Admin</div>
+                <div class="flex items-center ml-1 whitespace-nowrap">
+                    <mat-icon
+                        class="icon-size-5 text-secondary"
+                        [svgIcon]="'heroicons_solid:chevron-right'"></mat-icon>
+                    <a class="ml-1 text-primary-500">Articles</a>
+                </div>
+            </div>
+            <!-- Title -->
+            <div class="mt-2 text-3xl font-extrabold tracking-tight leading-tight truncate">
+                Articles & Blogs
+            </div>
+        </div>
+        <!-- Actions -->
+        <div class="flex flex-shrink-0 items-center mt-6 sm:mt-0 sm:ml-4">
+            <button
+                mat-flat-button
+                color="primary"
+                (click)="openCreateDialog()">
+                <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
+                <span class="ml-2 mr-1">New Article</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Main -->
+    <div class="flex-auto p-6 sm:p-10">
+        
+        <!-- Search and Filters -->
+        <div class="w-full max-w-screen-xl mx-auto mb-8">
+            <div class="flex flex-col sm:flex-row gap-4">
+                <!-- Search -->
+                <mat-form-field class="flex-auto">
+                    <mat-icon matPrefix [svgIcon]="'heroicons_solid:search'"></mat-icon>
+                    <input
+                        matInput
+                        [(ngModel)]="searchQuery"
+                        (ngModelChange)="filterArticles()"
+                        placeholder="Search articles...">
+                </mat-form-field>
+
+                <!-- Tag Filter -->
+                <mat-form-field class="sm:w-64">
+                    <mat-label>Filter by tags</mat-label>
+                    <mat-select
+                        [(ngModel)]="selectedTags"
+                        (ngModelChange)="filterArticles()"
+                        multiple>
+                        <mat-option *ngFor="let tag of allTags" [value]="tag">
+                            {{tag}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+
+        <!-- Loading -->
+        <div *ngIf="loading" class="flex justify-center items-center p-20">
+            <mat-spinner></mat-spinner>
+        </div>
+
+        <!-- Articles Grid -->
+        <div *ngIf="!loading" class="w-full max-w-screen-xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <mat-card *ngFor="let article of filteredArticles" class="flex flex-col cursor-pointer hover:shadow-lg transition-shadow" (click)="viewArticle(article)">
+                    <!-- Article Image -->
+                    <div class="relative h-48 bg-gray-200 dark:bg-gray-700 overflow-hidden">
+                        <img
+                            *ngIf="article.image"
+                            [src]="article.image"
+                            [alt]="article.title"
+                            class="w-full h-full object-cover">
+                        <div
+                            *ngIf="!article.image"
+                            class="w-full h-full flex items-center justify-center">
+                            <mat-icon
+                                class="icon-size-20 text-gray-400"
+                                [svgIcon]="'heroicons_outline:document-text'"></mat-icon>
+                        </div>
+                    </div>
+
+                    <!-- Article Content -->
+                    <mat-card-content class="flex-auto p-6">
+                        <h3 class="text-xl font-bold mb-2 line-clamp-2">{{article.title}}</h3>
+                        <p class="text-secondary mb-4 line-clamp-3">{{getExcerpt(article.content)}}</p>
+
+                        <!-- Tags -->
+                        <div *ngIf="article.tags && article.tags.length > 0" class="flex flex-wrap gap-2 mb-4">
+                            <mat-chip *ngFor="let tag of article.tags" class="text-xs">
+                                {{tag}}
+                            </mat-chip>
+                        </div>
+
+                        <!-- Meta -->
+                        <div class="text-sm text-secondary">
+                            <div>{{article.createdAt | date:'medium'}}</div>
+                        </div>
+                    </mat-card-content>
+
+                    <!-- Actions -->
+                    <mat-card-actions class="p-4 pt-0">
+                        <div class="flex gap-2">
+                            <button
+                                *ngIf="canEdit(article)"
+                                mat-button
+                                color="primary"
+                                (click)="openEditDialog(article); $event.stopPropagation()">
+                                <mat-icon [svgIcon]="'heroicons_outline:pencil'"></mat-icon>
+                                <span class="ml-1">Edit</span>
+                            </button>
+                            <button
+                                *ngIf="canDelete(article)"
+                                mat-button
+                                color="warn"
+                                (click)="deleteArticle(article); $event.stopPropagation()">
+                                <mat-icon [svgIcon]="'heroicons_outline:trash'"></mat-icon>
+                                <span class="ml-1">Delete</span>
+                            </button>
+                        </div>
+                    </mat-card-actions>
+                </mat-card>
+            </div>
+
+            <!-- Empty State -->
+            <div *ngIf="filteredArticles.length === 0" class="flex flex-col items-center justify-center p-20">
+                <mat-icon
+                    class="icon-size-24 text-gray-400 mb-4"
+                    [svgIcon]="'heroicons_outline:document-text'"></mat-icon>
+                <h3 class="text-2xl font-semibold mb-2">No articles found</h3>
+                <p class="text-secondary">Try adjusting your search or filters</p>
+            </div>
+        </div>
+    </div>
+</div>

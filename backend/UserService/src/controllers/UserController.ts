@@ -44,6 +44,22 @@ class UserController {
       return res.status(500).json({ message: 'Server error' });
     }
   }
+
+  // GET /users (Admin only)
+  public async getAllUsers(req: Request, res: Response) {
+    try {
+      // Map _id to id for frontend compatibility
+      const users = await User.find().select('-password').sort({ createdAt: -1 });
+      const mappedUsers = users.map(user => {
+          const u = user.toObject();
+          return { ...u, id: u._id };
+      });
+      return res.json(mappedUsers);
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ message: 'Server error' });
+    }
+  }
 }
 
 export default new UserController();

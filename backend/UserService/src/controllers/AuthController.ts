@@ -10,7 +10,8 @@ import {
 import { validationResult } from 'express-validator';
 
 const COOKIE_NAME = process.env.REFRESH_TOKEN_COOKIE_NAME || 'refreshToken';
-const COOKIE_SECURE = process.env.COOKIE_SECURE === 'true';
+const COOKIE_SECURE = process.env.COOKIE_SECURE === 'true' || process.env.NODE_ENV === 'production';
+const COOKIE_SAME_SITE = (process.env.COOKIE_SAME_SITE as 'strict' | 'lax' | 'none') || 'lax';
 const COOKIE_DOMAIN = process.env.COOKIE_DOMAIN || 'localhost';
 
 class AuthController {
@@ -55,7 +56,12 @@ class AuthController {
         return res.status(401).json({ message: 'Invalid credentials' });
 
       // create tokens
-      const accessToken = createAccessToken({ id: user._id, role: user.role });
+      const accessToken = createAccessToken({
+        id: user._id,
+        role: user.role,
+        name: user.name,
+        email: user.email,
+      });
       const { raw: refreshToken, expiresIn } = await createAndStoreRefreshToken(
         user._id.toString()
       );
@@ -64,7 +70,7 @@ class AuthController {
       res.cookie(COOKIE_NAME, refreshToken, {
         httpOnly: true,
         secure: COOKIE_SECURE,
-        sameSite: 'strict',
+        sameSite: COOKIE_SAME_SITE,
         maxAge: expiresIn * 1000,
         domain: COOKIE_DOMAIN,
       });
@@ -98,16 +104,22 @@ class AuthController {
       const user = await User.findById(userId);
       if (!user) return res.status(404).json({ message: 'User not found' });
 
-      const accessToken = createAccessToken({ id: user._id, role: user.role });
+      const accessToken = createAccessToken({
+        id: user._id,
+        role: user.role,
+        name: user.name,
+        email: user.email,
+      });
       // Optionally rotate refresh token:
       await revokeRefreshToken(userId);
       const { raw: newRefresh, expiresIn } = await createAndStoreRefreshToken(
         userId
       );
+      
       res.cookie(COOKIE_NAME, newRefresh, {
         httpOnly: true,
         secure: COOKIE_SECURE,
-        sameSite: 'strict',
+        sameSite: COOKIE_SAME_SITE,
         maxAge: expiresIn * 1000,
         domain: COOKIE_DOMAIN,
       });
@@ -128,8 +140,10 @@ class AuthController {
         await revokeRefreshToken(userId);
       }
       res.clearCookie(COOKIE_NAME, {
-        domain: process.env.COOKIE_DOMAIN || 'localhost',
+        domain: COOKIE_DOMAIN,
         path: '/',
+        secure: COOKIE_SECURE,
+        sameSite: COOKIE_SAME_SITE,
       });
       return res.json({ message: 'Logged out' });
     } catch (err) {

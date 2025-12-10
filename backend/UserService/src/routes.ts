@@ -38,6 +38,9 @@ router.post('/refresh', AuthController.refresh);
 router.post('/logout', AuthController.logout);
 
 // ----------------- USER -----------------
+// Get all users (Admin only)
+router.get('/', authenticate, authorize('Admin'), UserController.getAllUsers);
+
 // Get current user
 router.get('/me', authenticate, UserController.me);
 

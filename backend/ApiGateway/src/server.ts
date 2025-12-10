@@ -15,7 +15,8 @@ class ServerClass {
   }
 
   private configureMiddleware() {
-    this.app.use(cors());
+    const origin = process.env.FRONTEND_ORIGIN || 'http://localhost:4200';
+    this.app.use(cors({ origin, credentials: true }));
 
     // Parse JSON bodies for all requests
     this.app.use(express.json());
