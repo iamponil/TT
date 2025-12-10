@@ -27,13 +27,14 @@ A full-stack article management platform built with Angular and Node.js microser
 
 ### Frontend
 
-- **Framework**: Angular 12.1.1
-- **UI Library**: Angular Material
+- **Framework**: Angular 16.2.12
+- **UI Library**: Angular Material 16.2.14
 - **Template**: Fuse Angular Starter
 - **Rich Text Editor**: Quill (ngx-quill)
 - **Real-time**: Socket.io Client
 - **Styling**: TailwindCSS + Custom CSS
 - **State Management**: RxJS
+- **Note**: Dashboard charts (ng-apexcharts) temporarily disabled due to Angular 16 compatibility issues
 
 ### Backend
 
@@ -118,7 +119,7 @@ Before installation, ensure you have the following installed:
 - **npm**: Version 10.x or higher
 - **MongoDB**: Version 5.x or higher (running locally or remote instance)
 - **Redis**: Version 7.x or higher (running locally or remote instance)
-- **Angular CLI**: Version 12.x (`npm install -g @angular/cli@12`)
+- **Angular CLI**: Version 16.x (`npm install -g @angular/cli@16`)
 
 ## 🚀 Installation
 
